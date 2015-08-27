@@ -1,0 +1,81 @@
+_bw()
+{
+	local cur prev opts
+	COMPREPLY=()
+	cur="${COMP_WORDS[COMP_CWORD]}"
+	prev="${COMP_WORDS[COMP_CWORD-1]}"
+	prev2="${COMP_WORDS[COMP_CWORD-2]}"
+	opts="apply debug groups items metadata nodes plot repo run test verify zen"
+	for i in ${COMP_WORDS[@]}
+	do
+		case "${i}" in
+			apply)
+				local command='apply'
+			;;
+			debug)
+				local command='debug'
+			;;
+			items)
+				local command='items'
+			;;
+			metadata)
+				local command='metadata'
+			;;
+			test)
+				local command='test';
+			;;
+			verify)
+				local command='verify'
+			;;
+			run)
+				local command='run'
+			;;
+		esac
+	done
+#	case "${prev2}" in
+#		apply)
+#			local command='apply'
+#		;;
+#		*)
+#		;;
+#	esac
+	case "${command}" in
+		apply|verify|items|test|metadata|run)
+			local options 
+			options="$(bw nodes)" || options=""
+			case "${command}" in
+				apply)
+					options="$options -h -f -i -p -P --profiling --interactive --help --force --parallel-nodes --parallel-items"
+					;;
+				verify)
+					options="$options -h --help -F --only-needs-fixing -p --parallel-nodes -P --parallel-items -s --summary"
+					;;
+				items)
+					if [ "$prev" != '-w' -a "$prev" != '--write-file-previews' ]
+					then
+						options="$options -h --help -w --write-file-previews --repr"
+					else
+						COMPREPLY=( $(compgen -d -- ${cur})) 
+						return 0
+					fi		
+					;;
+				test)
+					options="$options -h --help -c --plugin-conflict-error -p --parallel-nodes -P --parallel-items"
+					;;
+				run)
+					local groups
+					groups=$(bw groups) || groups=""
+					options="$options $groups -h --help --no-sudo -f --may-fail -p --parallel-nodes"
+					;;
+			esac
+			COMPREPLY=( $(compgen -W "${options}" -- ${cur}))
+			return 0
+			;;
+		*)
+		;;
+	esac
+	COMPREPLY=( $(compgen -W "$opts" -- ${cur}))
+	return 0
+}
+# check, if this is an bw repo
+complete -F _bw bw
