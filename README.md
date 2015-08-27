@@ -2,6 +2,7 @@
 a bash completion for bundlewrap (http://bundlewrap.org)
 
 # usage
-simply copy file bw to /etc/bash-completion.d/
+sudo cp bw /etc/bash_completion.d/
+
 # status
-its just a first version, needs some optimizing and performance optimization
+its just a first version, needs some general optimizations and especially performance optimization
