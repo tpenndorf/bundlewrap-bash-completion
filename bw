@@ -42,7 +42,7 @@ _bw()
 	case "${command}" in
 		apply|verify|items|test|metadata|run)
 			local options 
-			options="$(bw nodes)" || options=""
+			options="$(bw nodes;bw groups)" || options=""
 			case "${command}" in
 				apply)
 					options="$options -h -f -i -p -P --profiling --interactive --help --force --parallel-nodes --parallel-items"
